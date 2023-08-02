@@ -66,11 +66,11 @@ You need Gradle Development Environment (If you use Kotlin DSL, it is better sim
 How to Install?
 <details>
   <summary>Steps(Kotlin DSL)</summary>
-  wait me upload to maven
+  wait me upload to maven... before i upload, you can copy the code to your project... 
 </details>  
 <details>
   <summary>Steps(Groovy DSL)</summary>
-  wait me upload to maven
+  wait me upload to maven... before i upload, you can copy the code to your project... 
   aa
 </details>  
 
