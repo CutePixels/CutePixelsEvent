@@ -5,42 +5,22 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 
 
 apply plugin: 'java'
 
-group = 'me.godshand'
-version = '0.1'
+group = 'cute.pixels'
+version = '0.1.0'
 
 repositories {
     mavenCentral()
-    google()
-
-    maven {
-        name = 'codemc-repo'
-        url = 'https://repo.codemc.io/repository/nms/'
-    }
-    maven {
-        name = 'dmulloy2-repo'
-        url = 'https://repo.dmulloy2.net/repository/public/'
-    }
-    maven {
-        name = 'sonatype'
-        url = 'https://oss.sonatype.org/content/groups/public/'
-    }
-    maven {
-        name = 'placeholderapi'
-        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
-    }
-
 }
 
 
 shadowJar {
-    baseName = 'Base to use'
+    baseName = 'CutePixelsEvent-X'
     classifier = null
     version = null
 }
@@ -50,10 +30,6 @@ sourceSets {
 }
 
 dependencies {
-    shadow "org.jetbrains.kotlin:kotlin-stdlib-common:1.7.10"
-    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
-    shadow "io.ktor:ktor-client-logging:1.4.2"
-    shadow "io.ktor:ktor-client-json:1.4.2"
 }
 
 def targetJavaVersion = 8
@@ -83,9 +59,6 @@ processResources {
     inputs.properties props
     expand props
     filteringCharset 'UTF-8'
-    filesMatching('plugin.yml') {
-        expand props
-    }
 }
 
 javadoc {
