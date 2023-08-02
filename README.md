@@ -34,9 +34,9 @@
   <span> · </span>
     <a href="https://github.com/CutePixels/CutePixelsEvent">Documentation</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Report Bug</a>
+    <a href="https://github.com/CutePixels/CutePixelsEvent/issues/">Report Bug</a>
   <span> · </span>
-    <a href="https://github.com/Louis3797/awesome-readme-template/issues/">Request Feature</a>
+    <a href="https://github.com/CutePixels/CutePixelsEvent/blob/main/README-cn.md">中文</a>
   </h4>
 </div>
 
