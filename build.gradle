@@ -1,0 +1,115 @@
+
+
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+
+
+apply plugin: 'java'
+
+group = 'me.godshand'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+    google()
+
+    maven {
+        name = 'codemc-repo'
+        url = 'https://repo.codemc.io/repository/nms/'
+    }
+    maven {
+        name = 'dmulloy2-repo'
+        url = 'https://repo.dmulloy2.net/repository/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'placeholderapi'
+        url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/'
+    }
+
+}
+
+
+shadowJar {
+    baseName = 'Base to use'
+    classifier = null
+    version = null
+}
+
+sourceSets {
+    mainClassName = "cute.pixels.event.CutePixelEventKt"
+}
+
+dependencies {
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-common:1.7.10"
+    shadow "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.10"
+    shadow "io.ktor:ktor-client-logging:1.4.2"
+    shadow "io.ktor:ktor-client-json:1.4.2"
+}
+
+def targetJavaVersion = 8
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "utf-8"
+}
+
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    expand props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+}
+
+javadoc {
+    options.encoding "UTF-8"
+}
+
+java {
+    sourceCompatibility("1.8")
+    targetCompatibility("1.8")
+}
+
+// Tasks
+
+tasks.register("packSourcesJar", Jar) {
+    from(sourceSets.main.allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.named("jar", Jar) {
+    dependsOn([
+            tasks.named("packSourcesJar"),
+    ])
+}
+
+tasks.register("logBuildSuccessful") {
+    logger.debug("Build Successful and publish successful! by Foshou")
+}
