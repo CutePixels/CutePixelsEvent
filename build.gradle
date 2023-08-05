@@ -57,13 +57,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 
-processResources {
-    def props = [version: version]
-    inputs.properties props
-    expand props
-    filteringCharset 'UTF-8'
-}
-
 javadoc {
     options.encoding "UTF-8"
 }
