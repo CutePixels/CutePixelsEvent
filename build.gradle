@@ -5,6 +5,7 @@ plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.7.10'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 
@@ -12,24 +13,26 @@ plugins {
 apply plugin: 'java'
 
 group = 'cute.pixels'
-version = '0.1.0'
+version = '1.0.0'
 
 repositories {
     mavenCentral()
 }
 
-
 shadowJar {
-    baseName = 'CutePixelsEvent-X'
-    classifier = null
-    version = null
+    baseName = 'CutePixelsEvent'
+    classifier = "FULL"
+    version = '1.0.0'
 }
 
 sourceSets {
-    mainClassName = "cute.pixels.event.CutePixelEventKt"
+    mainClassName = "cute.pixels.event.CutePixelsEventKt"
 }
 
+
+
 dependencies {
+    shadow "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
 }
 
 def targetJavaVersion = 8
@@ -81,8 +84,4 @@ tasks.named("jar", Jar) {
     dependsOn([
             tasks.named("packSourcesJar"),
     ])
-}
-
-tasks.register("logBuildSuccessful") {
-    logger.debug("Build Successful and publish successful! by Foshou")
 }
