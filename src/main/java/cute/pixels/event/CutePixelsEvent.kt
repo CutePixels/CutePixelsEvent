@@ -30,12 +30,12 @@ annotation class EventHandler(
  * Add this to EventHandler annotation arguments!
  */
 enum class EventPrio(val value: Int) {
-    MEDIUM(3),
-    NORMAL(2),
-    PRO(1),
-    PLUS(0),
-    GOOD(-1),
-    MAX(-2)
+    MEDIUM(0),
+    NORMAL(-1),
+    PRO(-2),
+    PLUS(-3),
+    GOOD(-4),
+    MAX(-5)
 }
 
 /**
@@ -53,8 +53,7 @@ interface Cancellable {
 
 abstract class Event
 
-val data=EventBus()
-fun getEventBus() = data
+val eventBus=EventBus()
 
 /**
  * can register some listeners and post events
@@ -90,9 +89,11 @@ class EventBus {
     /**
      * Register a listener in a object.
      */
-    fun registerListener(listener: Any, methodName: String, eventType: Class<*>, prio: EventPrio = EventPrio.NORMAL) {
+    fun registerListener(listener: Any, methodName: String, eventType: Class<*>) {
         try {
             val method = listener.javaClass.getDeclaredMethod(methodName, eventType)
+            val eventHandlerAnnotation = method.getAnnotation(EventHandler::class.java)
+            val prio=eventHandlerAnnotation.prio
             val wrapper = ListenerWrapper(listener, method, eventType, prio)
             registerListener(eventType, wrapper)
         } catch (exception: NoSuchMethodException) {
@@ -155,17 +156,3 @@ class EventBus {
 }
 class ListenerParameterSizeException(message: String) : Exception("ListenerParameterSizeException: $message\n监听器参数数量不正确。")
 class ListenerParameterTypeException(message: String) : Exception("ListenerParameterTypeException: $message\n监听器参数类型不正确。")
-
-
-
-
-/**
- * just a test. you can delete this!
- */
-// an easy event bus
-
-// my functions
-
-fun getMethodObject(clazz: Class<*>, methodName:String): Method {
-    return clazz.getMethod(methodName, Int::class.java, String::class.java)
-}
