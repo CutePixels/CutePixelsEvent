@@ -63,11 +63,6 @@ dependencies {
 }
 ```
 ## 使用方法
-获取事件总线对象：
-
-```kotlin
-val bus = cute.pixels.event.eventBus
-```
 订阅(监听)事件：
 
 ```kotlin
@@ -87,9 +82,9 @@ object Listeners {
 ```kotlin
 fun register() {
     // 注册一个监听器
-    bus.registerListener(Listeners, "onEvent", MyEvent::class.java)
+    EventBus.registerListener(Listeners, "onEvent", MyEvent::class.java)
     // 注册一个对象中的所有监听器
-    bus.registerListeners(Listeners)
+    EventBus.registerListeners(Listeners)
 }
 ```
 创建事件：
@@ -119,8 +114,8 @@ class MyCancellableEvent : Event(), Cancellable {
 
 ```kotlin
 fun postEvents() {
-eventBus.post(MyCancellableEvent)
-eventBus.post(MyEvent)
+  EventBus.post(MyCancellableEvent)
+  EventBus.post(MyEvent)
 }
 ```
 
