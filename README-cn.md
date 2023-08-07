@@ -119,6 +119,8 @@ fun postEvents() {
 }
 ```
 
+如果您使用Java，那么在使用代码的时候可能需要在 `EventBus` 后面添加一个 `.Companion`。
+
 ## 致谢
 - Guang_Chen_ ([GitHub](https://github.com/GuangChen2333)) 的 [CrystalKillListener](https://github.com/GuangChen2333/CrystalKillListener)
 
