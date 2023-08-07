@@ -121,6 +121,10 @@ fun postEvents() {
 }
 ```
 
+If you are using Java, you might need to append `.Companion` to `EventBus` when using the code.
+
+
+
 ## Thanks
 - Guang_Chen_ ([GitHub](https://github.com/GuangChen2333))'s [CrystalKillListener](https://github.com/GuangChen2333/CrystalKillListener)
 
