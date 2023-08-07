@@ -5,6 +5,12 @@
 <p>CutePixelsEvent is an open source and easy-to-use Kotlin implementation of an event bus. It allows you to efficiently communicate between different components of your application using a publish-subscribe pattern.</p>
 
 <p>
+  <a href="https://github.com/CutePixels/CutePixelsEvent/blob/main/README-cn.md">
+<img src="https://img.shields.io/badge/Documents-%E4%B8%AD%E6%96%87-blue" />
+  </a>
+</p>
+
+<p>
   <a href="https://github.com/CutePixels/CutePixelsEvent/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/CutePixels/CutePixelsEvent" alt="contributors" />
   </a>
