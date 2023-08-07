@@ -2,9 +2,6 @@
  * CutePixels on https://cutepixels.github.io
  * This project open source forever.
  * Created by https://github.com/rocky-co at 2023-07-30 10:34
- *
- * @update
- * 0.1.0 version released on 2023/8/2
 */
 package cute.pixels.event
 
@@ -26,6 +23,7 @@ annotation class EventHandler(
  * like bukkit EventPriority.
  * @see org.bukkit.event.EventPriority
  * @see EventHandler
+ * @property value prio level num
  *
  * Add this to EventHandler annotation arguments!
  */
@@ -43,12 +41,15 @@ enum class EventPrio(val value: Int) {
  * @see org.bukkit.event.Cancellable
  * @see EventHandler
  * @see EventPrio
+ * @property isCancelled can set cancelled
  *
  * You can remove the listening of other Listeners in a Listener! It works even better with <b>EventHandler</b> and <b>EventPrio</b>!
+ *
  */
 interface Cancellable {
     var isCancelled: Boolean
 }
+
 
 
 abstract class Event
@@ -60,7 +61,7 @@ val eventBus=EventBus()
  *
  * 参考
  *
- * NyaEvent cute.jiyun233.nya.NyaEventBus
+ * Bukkit org.bukkit.Bukkit
  *
  */
 class EventBus {
@@ -68,6 +69,8 @@ class EventBus {
 
     /**
      * Register all listeners in a object.
+     *
+     * @param listener an object. the function will register all listeners in this object.
      */
     fun registerListeners(listener: Any) {
         val listenerClass = listener.javaClass
@@ -88,6 +91,10 @@ class EventBus {
 
     /**
      * Register a listener in a object.
+     *
+     * @param listener is the object where the Listener function resides.
+     * @param methodName Listener function name.
+     * @param eventType listen type (listener param)
      */
     fun registerListener(listener: Any, methodName: String, eventType: Class<*>) {
         try {
@@ -101,6 +108,11 @@ class EventBus {
         }
     }
 
+    /**
+     * when you execute this function, all listener of listening this event was executed.
+     *
+     * @param event the event
+     */
     fun post(event: Any) {
         val eventType = event.javaClass
 
@@ -121,6 +133,11 @@ class EventBus {
         }
     }
 
+    /**
+     * If you don't want certain listeners to take effect, you can execute this function.
+     *
+     * @param the listener object
+     */
     fun unregister(listener: Any) {
         val listenerClass = listener.javaClass
         val wrappers = listeners.values.flatten()
@@ -132,6 +149,11 @@ class EventBus {
         }
     }
 
+    /**
+     * this is a private function.
+     * @param eventType type of event
+     * @param wrapper listener data
+     */
     private fun registerListener(eventType: Class<*>, wrapper: ListenerWrapper) {
         if (wrapper.method.parameterCount != 1) {
             throw ListenerParameterSizeException("Parameter size of listener method ${wrapper.method.name} in class ${wrapper.listener.javaClass.simpleName} should be 1. 监听器方法 ${wrapper.listener.javaClass.simpleName} 的 ${wrapper.method.name} 方法参数数量应为 1.")
@@ -142,9 +164,15 @@ class EventBus {
             listeners[eventType] = mutableListOf()
         }
         listeners[eventType]?.add(wrapper)
-        listeners[eventType]?.sortWith(compareByDescending<ListenerWrapper> { it.prio.value })
+        listeners[eventType]?.sortWith(compareByDescending { it.prio.value })
     }
 
+    /**
+     * @property listener listener object
+     * @property method listener method
+     * @property eventType listening event type of listener
+     * @property prio event prio level
+     */
     private data class ListenerWrapper(
         val listener: Any,
         val method: Method,
@@ -154,5 +182,13 @@ class EventBus {
 
 
 }
+
+/**
+ * @property message english
+ */
 class ListenerParameterSizeException(message: String) : Exception("ListenerParameterSizeException: $message\n监听器参数数量不正确。")
+
+/**
+ * @property message english
+ */
 class ListenerParameterTypeException(message: String) : Exception("ListenerParameterTypeException: $message\n监听器参数类型不正确。")
