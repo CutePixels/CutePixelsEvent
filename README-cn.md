@@ -4,6 +4,12 @@
 <p>CutePixelsEvent是一个开源且易于使用的Kotlin事件总线实现，它允许您使用发布-订阅模式高效地在应用程序的不同组件之间进行通信。</p>
 
 <p>
+  <a href="https://github.com/CutePixels/CutePixelsEvent/blob/main/README.md">
+<img src="https://img.shields.io/badge/Documents-English-blue" />
+  </a>
+</p>
+
+<p>
   <a href="https://github.com/CutePixels/CutePixelsEvent/graphs/contributors">
     <img src="https://img.shields.io/github/contributors/CutePixels/CutePixelsEvent" alt="contributors" />
   </a>
