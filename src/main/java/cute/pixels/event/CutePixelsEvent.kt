@@ -54,107 +54,110 @@ interface Cancellable {
 
 abstract class Event
 
-val eventBus=EventBus()
+
+
+val listeners: MutableMap<Class<*>, MutableList<EventBus.ListenerWrapper>> = HashMap()
+
 
 /**
  * can register some listeners and post events
  *
- * 参考
+ * @see org.bukkit.Bukkit
  *
- * Bukkit org.bukkit.Bukkit
- *
- */
+ */ 
 class EventBus {
-    private val listeners: MutableMap<Class<*>, MutableList<ListenerWrapper>> = HashMap()
 
-    /**
-     * Register all listeners in a object.
-     *
-     * @param listener an object. the function will register all listeners in this object.
-     */
-    fun registerListeners(listener: Any) {
-        val listenerClass = listener.javaClass
-        val methods = listenerClass.declaredMethods
+    companion object {
+        private val eventBus=EventBus()
+        /**
+         * Register all listeners in a object.
+         *
+         * @param listener an object. the function will register all listeners in this object.
+         */
+        fun registerListeners(listener: Any) {
+            val listenerClass = listener.javaClass
+            val methods = listenerClass.declaredMethods
 
-        for (method in methods) {
-            val eventHandlerAnnotation = method.getAnnotation(EventHandler::class.java)
-            if (eventHandlerAnnotation != null) {
-                val parameterTypes = method.parameterTypes
-                if (parameterTypes.size == 1) {
-                    val eventType = parameterTypes[0]
-                    val wrapper = ListenerWrapper(listener, method, eventType, eventHandlerAnnotation.prio)
-                    registerListener(eventType, wrapper)
+            for (method in methods) {
+                val eventHandlerAnnotation = method.getAnnotation(EventHandler::class.java)
+                if (eventHandlerAnnotation != null) {
+                    val parameterTypes = method.parameterTypes
+                    if (parameterTypes.size == 1) {
+                        val eventType = parameterTypes[0]
+                        val wrapper = ListenerWrapper(listener, method, eventType, eventHandlerAnnotation.prio)
+                        eventBus.registerListenerWrapper(wrapper)
+                    }
                 }
             }
         }
-    }
 
-    /**
-     * Register a listener in a object.
-     *
-     * @param listener is the object where the Listener function resides.
-     * @param methodName Listener function name.
-     * @param eventType listen type (listener param)
-     */
-    fun registerListener(listener: Any, methodName: String, eventType: Class<*>) {
-        try {
-            val method = listener.javaClass.getDeclaredMethod(methodName, eventType)
-            val eventHandlerAnnotation = method.getAnnotation(EventHandler::class.java)
-            val prio=eventHandlerAnnotation.prio
-            val wrapper = ListenerWrapper(listener, method, eventType, prio)
-            registerListener(eventType, wrapper)
-        } catch (exception: NoSuchMethodException) {
-            println("Method $methodName with parameter type $eventType not found in ${listener.javaClass.simpleName}")
+        /**
+         * Register a listener in a object.
+         *
+         * @param listener is the object where the Listener function resides.
+         * @param methodName Listener function name.
+         * @param eventType listen type (listener param)
+         */
+        fun registerListener(listener: Any, methodName: String, eventType: Class<*>) {
+            try {
+                val method = listener.javaClass.getDeclaredMethod(methodName, eventType)
+                val eventHandlerAnnotation = method.getAnnotation(EventHandler::class.java)
+                val prio=eventHandlerAnnotation.prio
+                val wrapper = ListenerWrapper(listener, method, eventType, prio)
+                eventBus.registerListenerWrapper(wrapper)
+            } catch (exception: NoSuchMethodException) {
+                println("Method $methodName with parameter type $eventType not found in ${listener.javaClass.simpleName}")
+            }
         }
-    }
 
-    /**
-     * when you execute this function, all listener of listening this event was executed.
-     *
-     * @param event the event
-     */
-    fun post(event: Any) {
-        val eventType = event.javaClass
+        /**
+         * when you execute this function, all listener of listening this event was executed.
+         *
+         * @param event the event
+         */
+        fun post(event: Any) {
+            val eventType = event.javaClass
 
-        if (listeners.containsKey(eventType)) {
-            val wrappers = listeners[eventType]
+            if (listeners.containsKey(eventType)) {
+                val wrappers = listeners[eventType]
 
-            for (wrapper in wrappers.orEmpty()) {
-                if (wrapper.method.parameterCount == 1) {
-                    val parameterType = wrapper.method.parameterTypes[0]
-                    if (parameterType.isAssignableFrom(eventType)) {
-                        val cancellable = event as? Cancellable
-                        if (cancellable == null || !cancellable.isCancelled) {
-                            wrapper.method.invoke(wrapper.listener, event)
+                for (wrapper in wrappers.orEmpty()) {
+                    if (wrapper.method.parameterCount == 1) {
+                        val parameterType = wrapper.method.parameterTypes[0]
+                        if (parameterType.isAssignableFrom(eventType)) {
+                            val cancellable = event as? Cancellable
+                            if (cancellable == null || !cancellable.isCancelled) {
+                                wrapper.method.invoke(wrapper.listener, event)
+                            }
                         }
                     }
                 }
             }
         }
-    }
 
-    /**
-     * If you don't want certain listeners to take effect, you can execute this function.
-     *
-     * @param the listener object
-     */
-    fun unregister(listener: Any) {
-        val listenerClass = listener.javaClass
-        val wrappers = listeners.values.flatten()
+        /**
+         * If you don't want certain listeners to take effect, you can execute this function.
+         *
+         * @param the listener object
+         */
+        fun unregister(listener: Any) {
+            val listenerClass = listener.javaClass
+            val wrappers = listeners.values.flatten()
 
-        for (wrapper in wrappers) {
-            if (wrapper.listener.javaClass == listenerClass) {
-                listeners[wrapper.eventType]?.remove(wrapper)
+            for (wrapper in wrappers) {
+                if (wrapper.listener.javaClass == listenerClass) {
+                    listeners[wrapper.eventType]?.remove(wrapper)
+                }
             }
         }
     }
 
     /**
-     * this is a private function.
      * @param eventType type of event
      * @param wrapper listener data
      */
-    private fun registerListener(eventType: Class<*>, wrapper: ListenerWrapper) {
+    fun registerListenerWrapper(wrapper: ListenerWrapper) {
+        val eventType: Class<*> = wrapper.eventType
         if (wrapper.method.parameterCount != 1) {
             throw ListenerParameterSizeException("Parameter size of listener method ${wrapper.method.name} in class ${wrapper.listener.javaClass.simpleName} should be 1. 监听器方法 ${wrapper.listener.javaClass.simpleName} 的 ${wrapper.method.name} 方法参数数量应为 1.")
         } else if (!Event::class.java.isAssignableFrom(wrapper.method.parameterTypes[0])) {
@@ -173,7 +176,7 @@ class EventBus {
      * @property eventType listening event type of listener
      * @property prio event prio level
      */
-    private data class ListenerWrapper(
+    data class ListenerWrapper(
         val listener: Any,
         val method: Method,
         val eventType: Class<*>,
