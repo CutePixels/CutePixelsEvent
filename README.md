@@ -63,12 +63,8 @@ dependencies {
     implementation('cute.pixels:event:{VERSION}')
 }
 ```
-## Usage
-Get the event bus instance:
 
-```kotlin
-val bus = cute.pixels.event.eventBus
-```
+## Usage
 Subscribe to events:
 
 ```kotlin
@@ -88,9 +84,9 @@ Register Event Listener(s):
 ```kotlin
 fun register() {
     // register a Listener
-    bus.registerListener(Listeners, "onEvent", MyEvent::class.java)
+    EventBus.registerListener(Listeners, "onEvent", MyEvent::class.java)
     // register all Listener in a object
-    bus.registerListeners(Listeners)
+    EventBus.registerListeners(Listeners)
 }
 ```
 Create an event:
@@ -120,8 +116,8 @@ Post an event:
 
 ```kotlin
 fun postEvents() {
-    eventBus.post(MyCancellableEvent)
-    eventBus.post(MyEvent)
+    EventBus.post(MyCancellableEvent)
+    EventBus.post(MyEvent)
 }
 ```
 
