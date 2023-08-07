@@ -1,0 +1,99 @@
+
+plugins {
+    id 'java'
+    // for test
+    id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
+}
+
+
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+group = 'cute.pixels'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'https://raw.githubusercontent.com/CutePixels/mvn-repo/main'
+    }
+
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+
+    maven {
+        url = 'https://oss.sonatype.org/content/repositories/central'
+    }
+}
+
+shadowJar {
+    baseName = 'CutePixelsEvent'
+    classifier = "FULL"
+    version = '1.0.0'
+}
+
+sourceSets {
+    // oh its just for test you can delete it
+    mainClassName = "cute.pixels.event.CutePixelsEventKt"
+}
+
+
+
+dependencies {
+    shadow "org.jetbrains.kotlin:kotlin-stdlib:1.7.10"
+    // it cannot load haha
+    compileOnly "cute.pixels:CutePixelsEvent:1.0.0"
+}
+
+// Config from CrystalKillListener thanks GuangChen2333
+
+javadoc {
+    options.encoding "UTF-8"
+}
+
+java {
+    sourceCompatibility("1.8")
+    targetCompatibility("1.8")
+    // its just for test too... you can delete it :3
+    mainClassName = "cute.pixels.event.CutePixelsEventKt"
+}
+
+// Tasks from CrystalKillListener thanks GuangChen2333
+
+tasks.register("sourcesJar", Jar) {
+    from(sourceSets.main.allJava)
+    archiveClassifier.set("sources")
+}
+
+tasks.register("javadocJar", Jar) {
+    from(javadoc)
+    archiveClassifier.set("javadoc")
+}
+
+tasks.register("cleanJavadocDir", Delete) {
+    delete("docs/")
+}
+
+tasks.register("javadocDir", Copy) {
+    dependsOn(tasks.named("cleanJavadocDir"))
+
+    from(javadoc)
+    into("docs/")
+}
+
+tasks.named("clean", Delete) {
+    dependsOn(tasks.named("cleanJavadocDir"))
+}
+
+tasks.named("jar", Jar) {
+    dependsOn([
+            tasks.named("javadocJar"),
+            tasks.named("sourcesJar"),
+    ])
+    println "Javadoc and sources are built!"
+}
+
