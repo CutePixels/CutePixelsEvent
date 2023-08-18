@@ -1,7 +1,7 @@
 /*
  * CutePixels on https://cutepixels.github.io
  * This project open source forever.
- * Created by https://github.com/rocky-co at 2023-07-30 10:34
+ * Created by https://github.com/Netrinix at 2023-07-30 10:34
 */
 package cute.pixels.event
 
